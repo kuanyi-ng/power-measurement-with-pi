@@ -137,7 +137,10 @@ python3 server_app.py
 ```sh
 # find the ip address of Rpi
 sudo nmap -sn 192.168.1.0/24 | grep "Pi" -C 5
-# TODO: add example output
+# example output
+Nmap scan report for <ip_addr_found>
+Host is up (0.87s latency).
+MAC Address: <mac_addr> (Raspberry Pi Trading)
 
 # ssh into rpi
 ssh ubuntu@<ip_addr_found> -i <path_to_ssh_private_key>
