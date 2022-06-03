@@ -5,7 +5,7 @@ from logging import DEBUG, INFO
 
 from assistant.assistant import Assistant
 from client.client import Client
-from experiment.demo_experiment import DemoExperiment
+from experiment.single_command_experiment import SingleCommandExperiment
 from utils.utils import enable_logging
 
 LOCALHOST = "127.0.0.1"
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
     # NOTE: change the experiment class to your own experiment class
     # experiment = InputZeroRatioExperiment(num_threads=args["num_threads"])
-    experiment = DemoExperiment()
+    experiment = SingleCommandExperiment('ls') # NOTE: change the command to your own command
     assistant = Assistant(client=client, experiment=experiment)
 
     assistant.perform_all_experiments()
