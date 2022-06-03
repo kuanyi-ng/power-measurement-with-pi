@@ -20,6 +20,7 @@ The measured voltage and current measured are the values for the whole board of 
   - [How to add Experiment?](#how-to-add-experiment)
     - [1. Create a new class based on the `Experiment` abstract class](#1-create-a-new-class-based-on-the-experiment-abstract-class)
     - [2. Update `client_app.py`](#2-update-client_apppy)
+  - [Enabling the usage of `pyvisa` without `sudo` permission](#enabling-the-usage-of-pyvisa-without-sudo-permission)
 
 ## Overview
 ### Interactions between Devices
@@ -216,3 +217,54 @@ class Experiment(ABC):
 ```py
 assistant = Assistant(client=client, experiment=NewExperiment())
 ```
+
+## Enabling the usage of `pyvisa` without `sudo` permission
+Check the `idVendor` and `idProduct` of the device you want to control using `pyvisa`
+```sh
+$ lsusb
+# example: Bus xxx Device xxx: ID <idVendor>:<idProduct> <Device Name>
+# example: Bus 001 Device 009: ID 0b3e:1029 Kikusui Electronics Corp.
+```
+
+The permission to control (i.e., read, write) a usb device (specified by idVendor and idProduct) can be provided to certain user group by adding a udev rules.
+```sh
+$ sudo vi /etc/udev/rules.d/99-com.rules
+```
+
+Then, add the following to the end of `99-com.rules`.
+```
+ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="<idVendor>", ATTRS{idProduct}=="<idProduct>", MODE="660", GROUP="plugdev"
+```
+
+Reload udev rules by
+```sh
+sudo udevadm control --reload
+```
+
+Add current user to the user group `plugdev`
+```sh
+adduser <current user username> plugdev
+```
+
+After all these settings, when the specified device is plugged in via USB, permission to control will be given to `plugdev` user group.
+Because the user we are using also belongs to the `plugdev` group, our user has the permission to control the device.
+This can be check using the following Python codes:
+```py
+import pyvisa
+
+rm = pyvisa.ResourceManager()
+
+# without permission
+#
+# resources info are not available because of absence of permission
+print(rm.list_resources()) # returns ()
+
+# with permission
+print(rm.list_resources()) # returns ( smtg, smtg )
+```
+
+- Main Reference:
+  - https://stackoverflow.com/a/32022908/11311980
+- About udev rules:
+  - https://linuxconfig.org/tutorial-on-how-to-write-basic-udev-rules-in-linux
+  - https://hana-shin.hatenablog.com/entry/2022/04/28/223022
