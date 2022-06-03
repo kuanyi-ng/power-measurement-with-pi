@@ -4,5 +4,6 @@ setuptools==49.2.1
 pipdeptree==2.2.1
 
 # DeviceController
+PyVISA-py==0.5.3
 PyVISA==1.12.0
 pyusb==1.2.1
