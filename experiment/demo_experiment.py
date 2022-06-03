@@ -12,6 +12,7 @@ class DemoExperiment(Experiment):
         self.next_i = 1
 
     def before_run(self):
+        # do nothing
         pass
 
     def get_output_filename(self) -> str:
@@ -24,6 +25,10 @@ class DemoExperiment(Experiment):
         logging.info(f"Sleeping for {self.next_i} s...")
         time.sleep(self.next_i)
         self.next_i += 1
+
+    def after_run(self):
+        # do nothing
+        pass
 
     def all_finished(self) -> bool:
         return self.next_i > self.all_i
