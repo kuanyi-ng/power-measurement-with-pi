@@ -35,13 +35,13 @@ local["Local machine"]
 subgraph "remote (lab)"
     direction LR
     dut -..-> |"communicate via socket (TCP)"| supervisor
-    supervisor ---> |control with USB| psu
-    psu --> |"measurements (data)"| supervisor
+    supervisor ---> |"control via USB"| psu
+    psu --> |"measurements (data) via USB"| supervisor
     psu --> |power supply| dut
 end
 
-local -..-> |login via ssh\nand control| supervisor
-local -..-> |login via ssh\nand control| dut
+local -..-> |login and control\nvia ssh| supervisor
+local -..-> |login and control\nvia ssh| dut
 ```
 
 ### Performing Measurements (Sequence Diagram)
