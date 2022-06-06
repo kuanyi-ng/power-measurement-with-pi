@@ -14,9 +14,10 @@ The measured voltage and current measured are the values for the whole board of 
     - [1. Start up `server_app`](#1-start-up-server_app)
     - [2. Wait for Rpi to start up and `ssh` into it](#2-wait-for-rpi-to-start-up-and-ssh-into-it)
     - [3. Start up `client_app` and perform experiments](#3-start-up-client_app-and-perform-experiments)
-    - [4. After `client_app` finished its executions, terminate `server_app`](#4-after-client_app-finished-its-executions-terminate-server_app)
-    - [5. Shutdown Rpi](#5-shutdown-rpi)
-    - [6. Power off power supply](#6-power-off-power-supply)
+    - [4. After `client_app` finished its executions, measured data (`*.csv`) can be found it `./`](#4-after-client_app-finished-its-executions-measured-data-csv-can-be-found-it-)
+    - [5. Terminte `server_app` (optional)](#5-terminte-server_app-optional)
+    - [6. Shutdown Rpi (optional)](#6-shutdown-rpi-optional)
+    - [7. Power off power supply (optional)](#7-power-off-power-supply-optional)
   - [How to add Experiment?](#how-to-add-experiment)
     - [1. Create a new class based on the `Experiment` abstract class](#1-create-a-new-class-based-on-the-experiment-abstract-class)
     - [2. Update `client_app.py`](#2-update-client_apppy)
@@ -124,52 +125,81 @@ end
 ```
 
 ## How to Use?
+
+Since there are 3 types of devices involved in a measurement session, the following format will be used to indicate which device to execute a specific command:
+```sh
+# local machine
+local$ <command>
+
+# device to measure
+dut$ <command>
+
+# supervisor device
+supervisor$ <command>
+```
+
 ### 1. Start up `server_app`
 <!-- TODO: want to change the interface here  -->
 ```sh
 # `--allow_public` option added to allow socket connection from other devices
-python3 server_app.py --allow_public
+supervisor$ python3 server_app.py --allow_public
 
 # when `client_app` is going to be executed on the same device as `server_app`
-python3 server_app.py
+supervisor$ python3 server_app.py
 ```
 
 ### 2. Wait for Rpi to start up and `ssh` into it
 ```sh
 # find the ip address of Rpi
-sudo nmap -sn 192.168.1.0/24 | grep "Pi" -C 5
+local$ sudo nmap -sn 192.168.1.0/24 | grep "Pi" -C 5
 # example output
 Nmap scan report for <ip_addr_found>
 Host is up (0.87s latency).
 MAC Address: <mac_addr> (Raspberry Pi Trading)
 
 # ssh into rpi
-ssh ubuntu@<ip_addr_found> -i <path_to_ssh_private_key>
+local$ ssh ubuntu@<ip_addr_found> -i <path_to_ssh_private_key>
 ```
 
 ### 3. Start up `client_app` and perform experiments
 <!-- TODO: want to enable command executions -->
 ```sh
-python3 client_app.py --allow_public
-
-# an input prompt will show up and ask for ip_addr of the device running `server_app`
+dut$ python3 client_app.py --allow_public --server_ip <ip_addr_of_supervisor_device>
 ```
-### 4. After `client_app` finished its executions, terminate `server_app`
+### 4. After `client_app` finished its executions, measured data (`*.csv`) can be found it `./`
+```sh
+supervisor$ ls
+XXX.csv
+YYY.csv
+...
+```
+
+📝 The directory to store `csv` files can be specify by changing the `set_output_filename` of the `Sampler` class in `sampler/sampler.py`.
+
+```py
+# example: store `csv` files in `measurement_data/`
+self.output_filename = f"measurement_data/{filename}"
+```
+### 5. Terminte `server_app` (optional)
 ```sh
 # ^C a few times to stop `server_app`
 ^C
 ```
 
-### 5. Shutdown Rpi
+📝 This step can be skipped if you plan to run another measurement session.
+
+### 6. Shutdown Rpi (optional)
 ```sh
-sudo shutdown now
+dut$ sudo shutdown now
 ```
 
-### 6. Power off power supply
+📝 This step can be skipped if you plan to run another measurement session.
+### 7. Power off power supply (optional)
 ```sh
-python3 power_off_supply.py
+supervisor$ python3 power_off_supply.py
 ```
 
+📝 This step can be skipped if you plan to run another measurement session.
 ## How to add Experiment?
 ### 1. Create a new class based on the `Experiment` abstract class
 ```py
@@ -221,14 +251,14 @@ assistant = Assistant(client=client, experiment=NewExperiment())
 ## Enabling the usage of `pyvisa` without `sudo` permission
 Check the `idVendor` and `idProduct` of the device you want to control using `pyvisa`
 ```sh
-$ lsusb
+dut$ lsusb
 # example: Bus xxx Device xxx: ID <idVendor>:<idProduct> <Device Name>
 # example: Bus 001 Device 009: ID 0b3e:1029 Kikusui Electronics Corp.
 ```
 
 The permission to control (i.e., read, write) a usb device (specified by idVendor and idProduct) can be provided to certain user group by adding a udev rules.
 ```sh
-$ sudo vi /etc/udev/rules.d/99-com.rules
+dut$ sudo vi /etc/udev/rules.d/99-com.rules
 ```
 
 Then, add the following to the end of `99-com.rules`.
@@ -238,12 +268,12 @@ ACTION=="add", SUBSYSTEMS=="usb", ATTRS{idVendor}=="<idVendor>", ATTRS{idProduct
 
 Reload udev rules by
 ```sh
-sudo udevadm control --reload
+dut$ sudo udevadm control --reload
 ```
 
 Add current user to the user group `plugdev`
 ```sh
-adduser <current user username> plugdev
+dut$ adduser <current user username> plugdev
 ```
 
 After all these settings, when the specified device is plugged in via USB, permission to control will be given to `plugdev` user group.
