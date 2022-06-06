@@ -14,7 +14,7 @@ The measured voltage and current measured are the values for the whole board of 
     - [1. Start up `server_app`](#1-start-up-server_app)
     - [2. Wait for Rpi to start up and `ssh` into it](#2-wait-for-rpi-to-start-up-and-ssh-into-it)
     - [3. Start up `client_app` and perform experiments](#3-start-up-client_app-and-perform-experiments)
-    - [4. After `client_app` finished its executions, measured data (`*.csv`) can be found it `./`](#4-after-client_app-finished-its-executions-measured-data-csv-can-be-found-it-)
+    - [4. After `client_app` finished its executions, measured data (`*.csv`) can be found in `./`](#4-after-client_app-finished-its-executions-measured-data-csv-can-be-found-in-)
     - [5. Terminte `server_app` (optional)](#5-terminte-server_app-optional)
     - [6. Shutdown Rpi (optional)](#6-shutdown-rpi-optional)
     - [7. Power off power supply (optional)](#7-power-off-power-supply-optional)
@@ -166,7 +166,7 @@ local$ ssh ubuntu@<ip_addr_found> -i <path_to_ssh_private_key>
 ```sh
 dut$ python3 client_app.py --allow_public --server_ip <ip_addr_of_supervisor_device>
 ```
-### 4. After `client_app` finished its executions, measured data (`*.csv`) can be found it `./`
+### 4. After `client_app` finished its executions, measured data (`*.csv`) can be found in `./`
 ```sh
 supervisor$ ls
 XXX.csv
