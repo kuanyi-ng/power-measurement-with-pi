@@ -255,6 +255,8 @@ dut$ lsusb
 # example: Bus xxx Device xxx: ID <idVendor>:<idProduct> <Device Name>
 # example: Bus 001 Device 009: ID 0b3e:1029 Kikusui Electronics Corp.
 ```
+📝 You will need to enable USB interface on the measurement device for them to show up in the output of `lsusb`
+(e.g., Kikusui PMX18 series can follow the steps in this [manual](https://manual.kikusui.co.jp/P/PMX_IF_J2.pdf) to enable USB interace.
 
 The permission to control (i.e., read, write) a usb device (specified by idVendor and idProduct) can be provided to certain user group by adding a udev rules.
 ```sh
