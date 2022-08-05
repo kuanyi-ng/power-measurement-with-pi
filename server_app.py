@@ -12,6 +12,8 @@ LOCALHOST = "127.0.0.1"
 
 PORT = 65432
 
+DEFAULT_OUTPUT_VOLTAGE = 5.1 # V
+DEFAULT_OUTPUT_CURRENT = 3.0 # A
 DEFAULT_SAMPLING_INTERVAL = 0.05 # sec
 
 def parse_args():
@@ -30,6 +32,20 @@ def parse_args():
         action="store_true",
         default=False,
         help="set -V to get more detailed logs (default: False)"
+    )
+
+    parser.add_argument(
+        "--output_voltage",
+        type=float,
+        default=DEFAULT_OUTPUT_VOLTAGE,
+        help=f"set output voltage of power supply in volt (default: {DEFAULT_OUTPUT_VOLTAGE} V)"
+    )
+
+    parser.add_argument(
+        "--output_current",
+        type=float,
+        default=DEFAULT_OUTPUT_CURRENT,
+        help=f"set output current of power supply in ampere (default: {DEFAULT_OUTPUT_CURRENT} A)"
     )
 
     parser.add_argument(
