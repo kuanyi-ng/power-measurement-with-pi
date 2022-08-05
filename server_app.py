@@ -61,34 +61,26 @@ def parse_args():
         help="set which measuring device to use. Choose from [14, 15, 21, 87]"
     )
 
-    args = parser.parse_args()
-
-    return {
-        "allow_public": args.allow_public,
-        "verbose": args.verbose,
-        "sampling_interval": args.sampling_interval,
-        "device_id": args.device_id,
-    }
-
+    return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_args()
-    log_level = DEBUG if args["verbose"] else INFO
+    log_level = DEBUG if args.verbose else INFO
     enable_logging(level=log_level)
 
-    device_controller = Kikusui(device_id=args["device_id"])
-    device_controller.set_output_voltage(5.1)
-    device_controller.set_output_current(3.0)
+    device_controller = Kikusui(device_id=args.device_id)
+    device_controller.set_output_voltage(args.output_voltage)
+    device_controller.set_output_current(args.output_current)
     device_controller.output_on()
 
-    host = PUBLIC_HOST if args["allow_public"] else LOCALHOST
+    host = PUBLIC_HOST if args.allow_public else LOCALHOST
     port = PORT
 
     s = Server(
         sampler=Sampler(
             device_controller=device_controller,
             output_filename='test.csv',
-            sampling_interval=args["sampling_interval"]
+            sampling_interval=args.sampling_interval
         ),
         host=host,
         port=port,
