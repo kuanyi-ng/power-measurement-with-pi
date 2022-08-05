@@ -42,7 +42,7 @@ def parse_args():
     parser.add_argument(
         "--device_id",
         required=True,
-        help="set which measuring device to use. Choose from [14, 15]"
+        help="set which measuring device to use. Choose from [14, 15, 21, 87]"
     )
 
     args = parser.parse_args()
