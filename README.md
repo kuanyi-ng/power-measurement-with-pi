@@ -1,7 +1,7 @@
 # Power Measurement with Raspberry Pi
 
 This is a set of programs that can be used to measure the changes of voltage and current supplied to a Raspberry Pi 4 executing some programs.
-The measured voltage and current measured are the values for the whole board of Rasberry Pi 4 (not a single transistor).
+The measured voltage and current measured are the values for the whole board of Rasberry Pi 4 (not the core).
 
 ## Table of Contents
 - [Power Measurement with Raspberry Pi](#power-measurement-with-raspberry-pi)
