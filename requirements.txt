@@ -1,6 +1,6 @@
 # Development
 wheel==0.40.0
-setuptools==67.6.1
+setuptools==67.7.2
 pipdeptree==2.7.0
 
 # DeviceController
