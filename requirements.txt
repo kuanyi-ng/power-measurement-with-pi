@@ -1,7 +1,7 @@
 # Development
 wheel==0.40.0
 setuptools==67.7.2
-pipdeptree==2.7.0
+pipdeptree==2.7.1
 
 # DeviceController
 PyVISA-py==0.6.1
